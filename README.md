@@ -1,11 +1,16 @@
 # JS-Interview
 
-## What is map, filter and reduce ? 
-1. Map Method
+[1. What is map, filter and reduce](#1-what-is-map-filter-and-reduce)
+
+[2. What is Closures ?](#2-what-is-closures)
+
+
+## 1. What is map, filter and reduce ? 
+### A. Map Method
     * creates a new array from calling a function for every array element.
     * does not execute the function for empty elements.
     * does not change the original array.
-```Javascipt
+```Javascript
 const nums = [2,3,4,5]
 const newNums = nums.map((curEle,index,arr)=>{
     return (curEle * 2) + index;
@@ -38,7 +43,7 @@ console.log(newNums) // [2,4]
 |As it return new Array we can chain other methods like filter or reduce|As it does not return new Array we cannot chain methods|
 
 
-2. Filter Method
+### B. Filter Method
     * method creates a new array filled with elements that pass a test provided by a function.
     * method does not execute the function for empty elements.
     * method does not change the original array.
@@ -67,7 +72,7 @@ const newNums = nums.myfilter((curvalue,index,arr)=>{
 })
 console.log(newNums) // [3,4,5]
 ```
-3. Reduce Method (tricky)
+### C. Reduce Method (tricky)
     * method executes a reducer function for array element.
     * method returns a single value: the function's accumulated result.
     * method does not execute the function for empty array elements.
@@ -147,3 +152,115 @@ const newNums = students.map((item,index,arr)=>{
 
 console.log(newNums);
 ```
+
+## 2. What is Closures ? 
+> a.  When we have a function defined inside of the another function, that inner function have access to variables and scopes of outer function even if that outer function is being executed
+
+> b. Clouser is created when we defined a function, not when we executed
+
+##### Important Interviews Quetions
+1. Concept of Clousers
+```Javascript
+function a(){
+    for(var i=0;i<4;i++){
+        setTimeout(()=>{
+            console.log(i);
+        },i*1000)
+    }
+}
+a()  // 4,4,4,4
+//  Note : var have function scope, so in every iteration it value get updated to new value 
+
+function a(){
+    for(let i=0;i<4;i++){
+        setTimeout(()=>{
+            console.log(i);
+        },i*1000)
+    }
+}
+a()  // 0,1,2,3
+//  Note : let have block scope, so in every iteration new block is created and value is preserved.
+
+
+
+// Question : Keep variable var only and give output as 0, 1, 2, 3
+function a(){
+    for(var i=0;i<4;i++){
+        function inner(i){
+            setTimeout(()=>{
+                console.log(i);
+            },i*1000)
+        }
+        inner(i)
+    }
+}
+a()  // 0,1,2,3
+```
+2. Module Pattern (Explore More)
+```Javascript
+var Module = (function(){
+    function privateMethod(){
+        console.log('Private');
+    }
+
+    return {
+        publicMethod : function(){
+            console.log('public');
+        },
+        privateMethod
+    }
+})()
+Module.publicMethod();
+Module.privateMethod()
+```
+3. Execute function once only if called n times
+```Javascript
+function once(func,context){
+    let ran;
+    return function(){
+        if(func){
+            ran = func()
+            func = null
+        }
+        return ran
+    }
+}
+
+let hello = once(()=>console.log('Hello Wolrd'))
+hello() // Hello World
+hello() // No Output
+```
+3. Caching/Memoize important
+```Javascript
+function Cached(fn){
+    let res = {}
+    return function(...args){
+        console.log(args);
+        const argsString = JSON.stringify(args)
+        console.log(argsString);
+        if(!res[argsString]){
+            res[argsString] = fn(...args)
+        }
+        return res[argsString]
+    }
+}
+const clumysquare = function(num1,num2){
+    for(let i=0;i<100000000;i++){
+    }
+    return num1*num2;
+}
+
+const cachedClumysquare = Cached(clumysquare)
+
+console.time()
+console.log(cachedClumysquare(500,500));
+console.timeEnd()
+
+console.time()
+console.log(cachedClumysquare(500,501));
+console.timeEnd()
+```
+
+
+
+
