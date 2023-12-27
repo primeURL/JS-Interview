@@ -260,7 +260,161 @@ console.time()
 console.log(cachedClumysquare(500,501));
 console.timeEnd()
 ```
+## 3. What is Currying ? 
+
+[Read this blog](https://roadsidecoder.hashnode.dev/javascript-interview-questions-currying-output-based-questions-partial-application-and-more)
+
+## 4. Objects in Javascript ? 
+> Objects are passed by reference.
+```Javascript
+//Dynamic Properties 
+let key = 'firstname';
+let value = 'utkarsh';
+const user = {
+    [key] : value
+}
+console.log(user);  // {firstname : 'utkarsh'}
+```
+
+```Javascript
+//Looping in Objects
+
+const user = {
+    name : 'Utkarsh',
+    age : 23,
+    isflag : true
+}
+for(key in user){
+    console.log(key);  // name, age, isflag
+}
+for(key in user){
+    console.log(user[key]);  // Utkarsh, 23, true
+}
+```
+
+```Javascript
+// What is the Output of the code ? 
+const a = {}
+const b = {key : 'b'}
+const c = {key : 'c'}
+a[(b)] = 100;
+a[(c)] = 200
+console.log(a) // { '[object Object]': 200 }
+console.log(a[(b)]); // 200
+
+// Note : Keys are stored in [object Object] fashion, to resolve this need to stringify.
+
+```
+```Javascript
+//Object Referencing
+ let a = {fruit : 'mango'}
+ let b = a;
+ a.fruit = 'banana';
+ console.log(b.fruit); // banana
+//------------------------------------------
+
+let person = {name : 'utkarsh'}
+let array = [person]
+person = null
+console.log(array); // [ { name: 'utkarsh' } ]
+//------------------------------------------
+
+let a = {a:2}
+let b = {a:2}
+ console.log(a===b); // false
+// Note : both a and b are pointing to diffrent memory location. Solution is to stringify both objects and compare
+```
+
+```Javascript
+// Refrencing vs local copy
+
+let value = {num : 10}
+let newValue = value   // newValue is refrence to value i.e also know as shallow copy
+newValue.num = 20
+console.log(newValue); // { num: 20 }
+console.log(value);   // { num: 20 }
+
+let value = {num : 10}
+let newValue = {...value} // newValue is local-copy of value i.e also know as deep copy
+// let newValue = Object.assign({},value)    // another way to deep copy
+// let newValue = JSON.parse(JSON.stringify(value)) // another way to deep copy
+newValue.num = 20
+console.log(newValue); // { num: 20 }
+console.log(value);   // { num: 10 }
 
 
 
 
+
+//Question
+let value = {num : 10}
+const multiply = (x = {...value})=>{
+    console.log(x.num +=10)
+}
+multiply()    // 20
+console.log(value); // { num: 10 }
+multiply()    // 20
+multiply(value)  // 20
+console.log(value); // { num: 20 }
+multiply(value) // 30
+
+```
+```Javascript
+// Important Question
+function changeAgeandRefrence(person){
+    // think 'person' in kind of varibale which is pointing to 'person1' object
+    person.age = 26;
+    person = {   // here we re-assigning new Object to varibale
+        name : 'Raj',
+        age: 30
+    }
+    return person
+}
+let person1 = {
+    name :'Utkarsh',
+    age : 23
+}
+const result = changeAgeandRefrence(person1)
+console.log(person1);   // { name: 'Utkarsh', age: 26 }
+console.log(result);   // { name: 'Raj', age: 30 }
+```
+
+## 5. Debouncing and Throttling
+
+```Javascript
+//HTML
+<button onclick="advancedSimple()">Click Me</button>
+//JS
+let counter = 0
+function simple(){
+    console.log('API call made',++counter);
+}
+const throttle = (fn,limit)=>{
+    let flag = true;
+    return function(){
+        if(flag){
+            fn()
+            flag = false;
+            setTimeout(()=>{
+                flag = true
+            },limit)
+        }
+    }
+}
+
+const debounce = (fn,limit)=>{
+    let timer;
+    return function(){
+        if(timer) clearTimeout(timer)
+        timer = setTimeout(()=>{
+            fn()
+         },limit)
+    }
+}
+
+let advancedSimple = debounce(simple,1000)
+```
+
+## 5. Memoization techniques, Pure functions and Pure components
+
+> Pure Functions in JS are functions that does not have any 
