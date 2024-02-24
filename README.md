@@ -418,3 +418,15 @@ let advancedSimple = debounce(simple,1000)
 ## 5. Memoization techniques, Pure functions and Pure components
 
 > Pure Functions in JS are functions that does not have any 
+
+## 6. Explain the concept of AJAX
+
+> Asynchronous JavaScript and XML (AJAX) is a web development technique that allows for asynchronous communication between the client and server, enabling dynamic content updates without refreshing the entire page.
+
+1. Event is occured in a webpage(button is clicked).
+2. An XMLHttpRequest Object is created by JS.
+3. XMLHttpRequest Object sends request to a web-server.
+4. Server process the request and send back response to web-page.
+5. The response is read by JS and Update the Page.
+6. All this happens dynamically without page refresh.
+
