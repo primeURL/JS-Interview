@@ -430,3 +430,24 @@ let advancedSimple = debounce(simple,1000)
 5. The response is read by JS and Update the Page.
 6. All this happens dynamically without page refresh.
 
+
+## 6. Event Loop In JS ? 
+In Js, Event Loop is fundamental Mechanism that enables Asynchronous execution of code.The event loop is responsible for managing execution of code, handling events, and maintaining flow of control.
+
+```Javascript
+console.log('A')
+console.log('B')
+
+setTimeout(()=>console.log('C'),4000)
+
+fetch('API').then(()=>console.log('Data Retrived'))
+
+cosole.log('D')
+
+//  Output
+// ['A', 'B', 'D', 'Data Retrived', 'C']
+```
+How Event Loops Works ? 
+1. JS uses call stack to keep track of code, JS have Global execution context to run the code.
+2. For handling events and fecth API, JS put them in Web API's.
+3. From Web API's it comes to call back queue, and when global-execution-context is over Event loop check in call-back queue and pushes it to Call Stack.
