@@ -260,6 +260,81 @@ console.time()
 console.log(cachedClumysquare(500,501));
 console.timeEnd()
 ```
+4. **Encapsulation**
+
+Closures can be used to encapsulate functionality within a function, making certain variables inaccessible from outside the function, thus achieving data encapsulation.
+```JS
+function Counter() {
+  let count = 0; // Variable count is encapsulated within the Counter function
+  return {
+    increment: function() {
+      count++;
+    },
+    decrement: function() {
+      if (count > 0) {
+        count--;
+      }
+    },
+    getCount: function() {
+      return count;
+    }
+  };
+}
+const counter = Counter();
+counter.increment();
+counter.increment();
+console.log(counter.getCount()); // Output: 2
+
+```
+In this example, the count variable is encapsulated within the Counter function. The returned object provides methods (increment, decrement, and getCount) to interact with the count variable, but the count variable itself is not directly accessible from outside the Counter function.
+
+5. **Private Data**
+
+Closures can be used to create private variables that are inaccessible from outside the function, ensuring data privacy.
+```JS
+function Person(name, age) {
+  let _name = name; // Private variable
+  let _age = age;   // Private variable
+
+  return {
+    getName: function() {
+      return _name;
+    },
+    getAge: function() {
+      return _age;
+    }
+  };
+}
+
+const person = Person("John", 30);
+console.log(person._name); // Output: undefined (private variable)
+console.log(person.getName()); // Output: "John"
+console.log(person.getAge());  // Output: 30
+```
+In this example, _name and _age are private variables encapsulated within the Person function. They cannot be accessed directly from outside the function, but getter methods (getName and getAge) are provided to access their values.
+
+6. **Module Pattern**
+Closures can be used to create modules, which are self-contained units of code that expose a public interface for interaction while keeping their internal implementation hidden.
+```JS
+let person = (function(){
+  let myName = 'Utkarsh'; // Private 
+  function sayName(){
+    console.log(myName)
+  }
+
+  function setName(newName){
+    myName = newName
+  }
+  return {
+    sayName,
+    setName
+  }
+})()
+
+person.sayName()  // Utkarsh
+person.setName('Hardik')
+person.sayName()  // Hardik
+```
 ## 3. What is Currying ? 
 
 [Read this blog](https://roadsidecoder.hashnode.dev/javascript-interview-questions-currying-output-based-questions-partial-application-and-more)
@@ -451,3 +526,93 @@ How Event Loops Works ?
 1. JS uses call stack to keep track of code, JS have Global execution context to run the code.
 2. For handling events and fecth API, JS put them in Web API's.
 3. From Web API's it comes to call back queue, and when global-execution-context is over Event loop check in call-back queue and pushes it to Call Stack.
+
+
+## 7. How can you handle errors in JavaScript?
+
+> If we did not handle erros in JS, the line where erros has occured from that line to bottom of our code execution will not happen, means code will break. No more execution of code will happen.
+
+> To run code gracefully even if errors has occured, we must caught errors in JS with try, catch block. So, if errors are occured then also code execution will not stop, because we are catching the errors in catch block.
+
+1. try : The try statement defines a code block to run (to try)
+2. catch : The catch statement defines a code block to handle any error.
+3. finally : The finally statement defines a code block to run regardless of the result.
+4. throw : The throw statement defines a custom error.
+
+Note : We can also use nested try-catch block to handle errors.
+
+## 8. Explain the concept of callback functions ?
+
+In JS, callback function is a function that is passed as an argument to another function and is executed after completion of specific task or an event. 
+
+```JS
+// Function with a callback
+// FetchData is Higher Order function
+function fetchData(callback) {
+  // Simulating asynchronous operation (e.g., fetching data from a server)
+  setTimeout(function() {
+    fetch('https://jsonplaceholder.typicode.com/users')
+    .then(res=>res.json())
+    .then((data)=>{
+      callback(data); // Calling the callback function with the fetched data
+    })
+    .catch((err)=> console.log(err))
+  }, 1000); 
+}
+// Callback function
+function displayData(data) {
+  console.log('Data', data);
+}
+// Calling the function with the callback
+fetchData(displayData);
+```
+
+### Use Cases in JS
+
+1. Event Handling:
+   Callbacks are commonly used to handle events in web development.
+```JS
+// Event handling with callbacks
+document.getElementById('myButton').addEventListener('click', function() {
+  console.log('Button clicked!');
+});
+```
+2. Array Iteration:
+    Callbacks can be used with array iteration methods like forEach, map, filter, etc.
+```JS
+// Array iteration with callbacks
+const numbers = [1, 2, 3, 4, 5];
+numbers.forEach(function(number) {
+  console.log(number * 2);
+});
+```
+3. Custom Callbacks:
+    Callbacks can also be defined as custom functions to be executed at a specific point in another function.
+```JS
+// Custom callback
+function processInput(input, callback) {
+  // Some processing logic
+  const processedData = input.toUpperCase();
+  // Execute the callback function with processed data
+  callback(processedData);
+}
+
+// Usage of custom callback
+processInput('hello', function(result) {
+  console.log('Processed input:', result);
+});
+```
+
+## 9. What is the purpose of the setTimeout function ?
+The 'setTimeout' function in JS is used to schedule the execution of a function after a specifed delay. It's primary purpose is to introduce asychronous behaviour into JS code, allowing certain actions to be executed after certain period of time , without blocking the execution of other code.
+
+### Use Cases : 
+
+1 . **Delaying Execution:** Executing a function after a certain period of time has passed, which can be useful for animations, timed alerts, or scheduled tasks.
+
+2. **Simulating Asynchronous Operations:** In scenarios where real asynchronous operations (like fetching data from a server) are not available, setTimeout can be used to mimic asynchronous behavior.
+
+3. **Debouncing and Throttling:** Controlling the frequency of function calls in response to events, such as user input, to improve performance or prevent excessive resource consumption.
+
+> Note : In a code whenever setTimeout is used, it get registred in Browser Web API's without blocking main thread of the code.In the call Stack when global execution context is finised event-loop will push into call stack from CallBack Queue.
+
