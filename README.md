@@ -538,7 +538,7 @@ let advancedSimple = debounce(simple,1000)
 6. All this happens dynamically without page refresh.
 
 
-## 6. Event Loop In JS ? 
+## 6. Event Loop In JS ?  Call Stack, Call Queue, ? 
 In Js, Event Loop is fundamental Mechanism that enables Asynchronous execution of code.The event loop is responsible for managing execution of code, handling events, and maintaining flow of control.
 
 ```Javascript
@@ -558,6 +558,8 @@ How Event Loops Works ?
 1. JS uses call stack to keep track of code, JS have Global execution context to run the code.
 2. For handling events and fecth API, JS put them in Web API's.
 3. From Web API's it comes to call back queue, and when global-execution-context is over Event loop check in call-back queue and pushes it to Call Stack.
+
+[Watch for More Understanding - Piyush Garg](https://www.youtube.com/watch?v=kl7ActKCQIU)
 
 
 ## 7. How can you handle errors in JavaScript?
@@ -705,11 +707,11 @@ console.log(originalArray); // Output: [1, 2, [3, 4]]
 ```
 ## 11. Explain Event Bubbling and Event Capturing/Trekeling ? 
 
-[Watch for More Understanding](https://www.youtube.com/watch?v=aVSf0b1jVKk)
+[1. Watch for More Understanding - Akshay Saini](https://www.youtube.com/watch?v=aVSf0b1jVKk)
 
-[Watch for More Understanding - Event Bubbling](https://www.youtube.com/watch?v=4XF1IVAH_dI)
+[2. Watch for More Understanding - Event Bubbling](https://www.youtube.com/watch?v=4XF1IVAH_dI)
 
-[Watch for More Understanding - RoadSide Coder](https://www.youtube.com/watch?v=rS_4YfbEo2U&list=PLKhlp2qtUcSaCVJEt4ogEFs6I41pNnMU5&index=12)
+[3. Watch for More Understanding - RoadSide Coder](https://www.youtube.com/watch?v=rS_4YfbEo2U&list=PLKhlp2qtUcSaCVJEt4ogEFs6I41pNnMU5&index=12)
 
 
 ### Event Delegation 
