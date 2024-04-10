@@ -4,6 +4,10 @@
 
 [2. What is Closures ?](#2-what-is-closures)
 
+Code Step by step
+Yahho baba
+Akshay Saiini
+Color Code
 
 ## 1. What is map, filter and reduce ? 
 ### A. Map Method
@@ -314,6 +318,9 @@ console.log(person.getAge());  // Output: 30
 In this example, _name and _age are private variables encapsulated within the Person function. They cannot be accessed directly from outside the function, but getter methods (getName and getAge) are provided to access their values.
 
 6. **Module Pattern**
+
+[Watch for More Understanding](https://www.youtube.com/watch?v=pOfwp6VlnlM&t=572s)
+
 Closures can be used to create modules, which are self-contained units of code that expose a public interface for interaction while keeping their internal implementation hidden.
 ```JS
 let person = (function(){
@@ -492,7 +499,32 @@ let advancedSimple = debounce(simple,1000)
 
 ## 5. Memoization techniques, Pure functions and Pure components
 
-> Pure Functions in JS are functions that does not have any 
+### Pure Functions 
+> Why ? Cleaner, Predictable, Consistent, Debuggable, Portable, Testable
+
+> Pure Functions in JS are functions that does not have any Side-effects
+
+> A Function that always return a exact same thing every single time you gave the same inputs
+
+> Pure functions will not affect external thing's outside the function, it will take inputs and operate on those inputs(but will not manipulate that inputs)in order to create output.
+
+> For same input's it will always return same output
+
+> As it does not have any side-effects, we don't have to mock anything. It is easy to unit test Pure Functions.
+
+> DownSides : Can't access Database, Can't access files, Can't access anything outside of it
+
+[Watch for More Understanding- Kyle](https://www.youtube.com/watch?v=fYbhD_KMCOg)
+
+[Watch for More Understanding - Color Code](https://www.youtube.com/watch?v=fYbhD_KMCOg)
+
+#### Impure Functions Examples
+1. DOM manipulation
+2. Math.random()
+3. new Date()
+4. User Input
+5. File IO
+6. Network Request
 
 ## 6. Explain the concept of AJAX
 
@@ -540,6 +572,8 @@ How Event Loops Works ?
 4. throw : The throw statement defines a custom error.
 
 Note : We can also use nested try-catch block to handle errors.
+
+[Watch for More Understanding](https://www.youtube.com/watch?v=rHQ1etbQpmQ)
 
 ## 8. Explain the concept of callback functions ?
 
@@ -614,5 +648,151 @@ The 'setTimeout' function in JS is used to schedule the execution of a function 
 
 3. **Debouncing and Throttling:** Controlling the frequency of function calls in response to events, such as user input, to improve performance or prevent excessive resource consumption.
 
-> Note : In a code whenever setTimeout is used, it get registred in Browser Web API's without blocking main thread of the code.In the call Stack when global execution context is finised event-loop will push into call stack from CallBack Queue.
+> Note : In a code whenever setTimeout is used, it get registred in Browser Web API's without blocking main thread of the code. In the call Stack when global execution context is finised event-loop will push into call stack from CallBack Queue.
+
+
+## 10. What is the purpose of the "use strict" directive in JavaScript?
+
+> Prevent Use of Undeclared variables
+
+> To avoid syantax error
+
+> To avoid dublicate Parametes in a function call
+
+
+[Watch for More Understanding](https://www.youtube.com/watch?v=FiAKLb4qrvo)
+
+## 11. Explain the differences between "shallow copy" and "deep copy" in JavaScript
+
+> In Js, variables are copied by values and objects are by refrence
+
+```JS
+let person = {
+    name : 'Utkarsh',
+    age : 24,
+    address : {
+        locality : 'Pune'
+    }
+}
+// This is shalllow copy, nested fields are mutable
+let p1 = {...person}  
+
+// This is deep copy, but if objects contains functions that will not be reflected. For Deep copy we can use lodash library.
+let p2 = JSON.parse(JOSON.stringify(person)) 
+
+// Recursive Function to Make Deep copy of Array/Object
+
+function deepCopy(obj) {
+    let result = Array.isArray(obj) ? [] : {};
+    for (let key in obj) {
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+            result[key] = deepCopy(obj[key]);
+        } else {
+            result[key] = obj[key];
+        }
+    }
+    return result;
+}
+
+let originalArray = [1, 2, [3, 4]];
+
+// Deep copy using a custom function
+let deepCopyArray = deepCopy(originalArray);
+
+deepCopyArray[2][0] = 5; // This will not affect originalArray
+console.log(originalArray); // Output: [1, 2, [3, 4]]
+
+```
+## 11. Explain Event Bubbling and Event Capturing/Trekeling ? 
+
+[Watch for More Understanding](https://www.youtube.com/watch?v=aVSf0b1jVKk)
+
+[Watch for More Understanding - Event Bubbling](https://www.youtube.com/watch?v=4XF1IVAH_dI)
+
+[Watch for More Understanding - RoadSide Coder](https://www.youtube.com/watch?v=rS_4YfbEo2U&list=PLKhlp2qtUcSaCVJEt4ogEFs6I41pNnMU5&index=12)
+
+
+### Event Delegation 
+>Event delegation is a technique used in JavaScript to handle events efficiently, especially when dealing with a large number of elements. Instead of attaching event handlers to individual elements, event delegation involves attaching a single event handler to a parent element that listens for events bubbling up from its descendants. This way, you can handle events for multiple elements with less memory usage and better performance.
+
+
+[Watch for More Understanding - Event Bubbling](https://www.youtube.com/watch?v=3KJI1WZGDrg)
+
+## 13. Purpose of new Keyword In JS
+If a function is called with new Keyword
+> Creates an Empty Object
+
+> Empty objects get assiged to this (this == {})
+
+> Return object from the function automatically
+
+## 13. Promises
+
+```JS
+console.log('Start');
+
+function subscribe(msg) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(msg);
+    }, 1000);
+  });
+}
+function likeVideo(msg, cb) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject('Failed');
+    }, 1000);
+  });
+}
+function shareVideo(msg, cb) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(msg);
+    }, 100);
+  });
+}
+// Promise Combinators
+// 1. Promise all
+   // In this if one of the promise get rejeceted, then all of them are rejected
+Promise.all([subscribe('subscribe my Channel'),
+likeVideo('Like my Video'),
+shareVideo('Share my Video')]).then((res)=>console.log(res)).catch((err)=>console.error(err))
+
+// 2. Promise race
+    // In this we get that promise that get rejected or   resolved first
+    
+Promise.race([subscribe('subscribe my Channel'),
+likeVideo('Like my Video'),
+shareVideo('Share my Video')]).then((res)=>console.log(res)).catch((err)=>console.error(err))
+
+// 3. Promise allSettled
+    // In this we get that all promise's either they are resolved or rejected
+    
+Promise.allSettled([subscribe('subscribe my Channel'),
+likeVideo('Like my Video'),
+shareVideo('Share my Video')]).then((res)=>console.log(res)).catch((err)=>console.error(err))
+
+// 3. Promise any
+    // In this we get the promise that gets fulfilled first. If all of the promises are rejected then we get reject error.
+    
+Promise.any([subscribe('subscribe my Channel'),
+likeVideo('Like my Video'),
+shareVideo('Share my Video')]).then((res)=>console.log(res)).catch((err)=>console.error(err))
+
+
+
+
+
+// subscribe('Subscribe the video',function(msg){
+//   console.log(msg)
+//   likeVideo('Like my Video',function(msg){
+//       console.log(msg)
+
+//   })
+// })
+
+console.log('End');
+
+```
 
