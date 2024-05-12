@@ -463,6 +463,7 @@ console.log(result);   // { name: 'Raj', age: 30 }
 
 ## 5. Debouncing and Throttling
 
+### Example : 1
 ```Javascript
 //HTML
 <button onclick="advancedSimple()">Click Me</button>
@@ -495,6 +496,80 @@ const debounce = (fn,limit)=>{
 }
 
 let advancedSimple = debounce(simple,1000)
+```
+
+### Example : 2
+
+```JS
+// HTML
+<input type="text">
+    <div>
+      <b>Default:</b>
+      <span id="default"></span>
+    </div>
+    <div>
+      <b>Debounce:</b>
+      <span id="debounce"></span>
+    </div>
+    <div>
+      <b>Throttle:</b>
+      <span id="throttle"></span>
+</div>
+```
+```Js
+ // JS
+const input = document.querySelector("input")
+const defaultText = document.getElementById("default")
+const debounceText = document.getElementById("debounce")
+const throttleText = document.getElementById("throttle")
+
+const updateDebounceText = debounce((text) => {
+    debounceText.textContent = text
+})
+console.log(updateDebounceText)
+
+const updateThrottleText = throttle((text) => {
+    throttleText.textContent = text
+}, 1000)
+
+function debounce(cb, delay = 1000) {
+  let timeout
+
+  return (...args) => {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => {
+      cb(...args)
+    }, delay)
+  }
+}
+
+function throttle(fn,delay = 1000){
+    let shouldWait = false
+    let waitingArgs
+    return function(...args){
+        if(shouldWait){
+            waitingArgs = args
+            console.log(waitingArgs)
+            return
+        } 
+        fn(...args)
+        shouldWait = true
+        setTimeout(()=>{
+            if(waitingArgs === null){
+                shouldWait = false
+            }else{
+                fn(...waitingArgs)
+                waitingArgs = null
+                shouldWait = false
+            }
+        },delay)
+    }
+}
+document.addEventListener("input", e => {
+  updateDebounceText(e.target.value)
+  updateThrottleText(e.target.value)
+})
+
 ```
 
 ## 5. Memoization techniques, Pure functions and Pure components
@@ -798,3 +873,148 @@ console.log('End');
 
 ```
 
+## 14. What is the purpose of the "IIFE" (Immediately Invoked Function Expression) pattern
+
+> An IIFE (Immediately Invoked Function Expression) is a JavaScript function that runs as soon as it is defined.
+
+```Js
+(function () {
+  console.log('hello function declaration')
+})();
+
+(() => {
+  console.log('hello arrow declaration')
+})();
+
+(async () => {
+    console.log('hello async function')
+})();
+```
+### Use Cases
+
+#### 1. Encapsulation and avoiding global scope pollution:
+```Js
+
+(function() {
+    // Creating private variables which is only accessble to this function
+    // Code here is scoped within the function
+    let localVar = 'This is a local variable';
+    console.log(localVar);
+})();
+
+// localVar is not accessible outside the IIFE
+
+```
+
+#### 2. Execute an async function
+```Js
+(async function() {
+    const response = await fetch('https://jsonplaceholder.typicode.com/todos/1');
+    data = await response.json(); // Assign the data to the variable declared outside the IIFE
+    console.log(data);
+})();
+
+```
+
+#### 3. Initializing code once:
+```JS
+let myModule = (function() {
+    let initialized = false;
+
+    function init() {
+        if (!initialized) {
+            console.log('Initialization code executed');
+            initialized = true;
+        }
+    }
+    return {
+        init: init
+    };
+})();
+
+myModule.init(); // Initialization code executed
+myModule.init(); // Code won't execute again since it's already initialized
+```
+## 15. How do we flatten an Object ? 
+
+```Js
+// Input 
+const data = {
+  user: {
+    name: "Alice",
+    address: {
+      street: "123 Main St",
+      city: "Anytown",
+      zip: ["12345","234","123","12"]
+    },
+  },
+  settings: {
+    theme: "light",
+    language: "en",
+  },
+};
+// Output
+{
+  'user.name': 'Alice',
+  'user.address.street': '123 Main St',
+  'user.address.city': 'Anytown',
+  'user.address.zip[0]': '12345',
+  'user.address.zip[1]': '234',
+  'user.address.zip[2]': '123',
+  'user.address.zip[3]': '12',
+  'settings.theme': 'light',
+  'settings.language': 'en'
+}
+function flatten(obj, prefix = '') {
+    let flattened = {};
+    for (const key in obj) {
+        const value = obj[key];
+        const prefixedKey = prefix ? `${prefix}.${key}` : key;
+        // handle array
+        if (Array.isArray(value)) {
+            value.forEach((item, index) => {
+                if (typeof item === 'object') {
+                    flattened = { ...flattened, ...flatten(item, `${prefixedKey}[${index}]`) };
+                } else {
+                    flattened[`${prefixedKey}[${index}]`] = item;
+                }
+            });
+        // handle object
+        } else if (typeof value === 'object') {
+            flattened = { ...flattened, ...flatten(value, prefixedKey) };
+        } else {
+            flattened[prefixedKey] = value;
+        }
+    }
+    return flattened;
+}
+console.log(flatten(data))
+
+```
+### Use Cases
+>**Data transformation for storage or serialization:** When storing or serializing data, you might need to flatten nested objects into a simpler structure that can be stored in a database or transmitted over a network more efficiently.
+
+>**Working with APIs:** Many APIs return nested JSON objects, which can be cumbersome to work with. Flattening these objects can make it easier to access and manipulate the data.
+
+>**User interfaces:** When working with complex forms or user inputs, you may receive nested data structures representing the form fields. Flattening these objects can simplify data validation, processing, and submission.
+
+## 16. How do we flatten an Array ? 
+
+```Js
+// Flatten An Array
+const a = [1, 2, 3, [4, [5, 6]], 7, 8, [3, [4, 5, [10, 9, 10]]]];
+// let result = []
+function flattenArray(a, result) {
+  for (let i = 0; i < a.length; i++) {
+    if (Array.isArray(a[i])) {
+      flattenArray(a[i], result);
+    } else {
+      result.push(a[i]);
+    }
+  }
+  return result;
+}
+
+console.log(flattenArray(a, []));
+
+```
