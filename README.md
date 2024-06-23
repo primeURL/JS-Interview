@@ -803,6 +803,10 @@ If a function is called with new Keyword
 
 > Return object from the function automatically
 
+> The implicit 'this' value is returned , if no explicit non-primitve value is returned (Very Impt)
+
+> Note : ES6 classes are syntatic sugar over constructor function. So, this behaviour is also applied to ES6 classes
+
 ## 13. Promises
 
 ```JS
