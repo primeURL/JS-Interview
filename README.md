@@ -600,6 +600,7 @@ document.addEventListener("input", e => {
 4. User Input
 5. File IO
 6. Network Request
+7. console.log() is also impure
 
 ## 6. Explain the concept of AJAX
 
@@ -808,6 +809,13 @@ If a function is called with new Keyword
 > Note : ES6 classes are syntatic sugar over constructor function. So, this behaviour is also applied to ES6 classes
 
 ## 13. Promises
+
+### Why Promises ? 
+
+How callback causes Inversion of control.
+
+[Watch for More Understanding](https://www.youtube.com/watch?v=bAlczbDUXx8)
+
 
 ```JS
 console.log('Start');
@@ -1021,4 +1029,189 @@ function flattenArray(a, result) {
 
 console.log(flattenArray(a, []));
 
+```
+
+```Js
+// With Custom Depth
+
+let arr = [
+    [1,2], [2,3], [4,[5,6],7], [10,11,15]
+]
+
+Array.prototype.myFlat = function(depth = 1){
+    let result = []
+    for(let a of this){
+        if(Array.isArray(a) && depth > 0){
+            // result = [...result, ...a.myFlat(level,myLevel++)]
+            result.push(...a.myFlat(depth - 1))
+        }else{
+            result.push(a)
+        }
+    }
+    return result
+}
+
+console.log(arr.myFlat(2))
+```
+## 17. JavaScript PloyFills ? 
+
+###  1. Call Ployfill
+
+```Js
+const car1 = {
+    name : 'Grand',
+    color : 'White'
+}
+
+function purchaseCar(price,currency){
+    console.log(`I have purchased ${this.name} - ${this.color} of ${price} ${currency}`)
+}
+
+Function.prototype.myCall = function(context = {},...args){
+    if(typeof this !== 'function'){
+        throw new Error(context + 'is not function')
+    }
+    context.fun = this
+    context.fun(...args)
+}
+
+// purchaseCar.call(car1,1200,'$')
+purchaseCar.myCall(car1,1200,'$') // I have purchased Grand - White of 1200 $
+
+```
+###  2. Apply Ployfill
+
+```Js
+const car1 = {
+    name : 'Grand',
+    color : 'White'
+}
+
+function purchaseCar(price,currency){
+    console.log(`I have purchased ${this.name} - ${this.color} of ${price} ${currency}`)
+}
+
+Function.prototype.myApply = function(context = {}, args = []){
+    if(typeof this !== 'function'){
+        throw new Error(context + 'is not function')
+    }
+      if(!Array.isArray(args)){
+        throw new TypeError('Args must be provided in array type')
+    }
+    context.fun = this
+    context.fun(...args)
+}
+
+// purchaseCar.apply(car1,1200,'$')
+purchaseCar.myApply(car1,1200,'$') // I have purchased Grand - White of 1200 $
+
+```
+###  3. Bind Ployfill
+
+```Js
+const car1 = {
+    name : 'Grand',
+    color : 'White'
+}
+
+function purchaseCar(price,currency){
+    console.log(`I have purchased ${this.name} - ${this.color} of ${price} ${currency}`)
+}
+
+Function.prototype.myBind = function(context = {}, ...args){
+    if(typeof this !== 'function'){
+        throw new Error(context + 'is not function')
+    }
+    context.fun = this
+    return function(...newArgs){
+        return context.fun(...args, ...newArgs)
+    }
+}
+
+// purchaseCar.bind(car1,1200,'$')
+const car = purchaseCar.myBind(car1,1200)
+car('$') // I have purchased Grand - White of 1200 $
+
+```
+###  4. Once Ployfill
+
+```Js
+function once(func, context){
+    let ran;
+    return function(...args){
+        if(func){
+            ran = func.apply(context, args)
+            func = null
+        }
+        return ran
+    }
+}
+
+let car = {
+    name : 'Suzuki',
+    price : 1000
+}
+function callback(a,b){
+    console.log(`My Car is ${this.name} it's price is ${this.price} | ${a},${b}`)
+}
+
+const hello = once(callback,car)
+hello(1,2) // My Car is Suzuki it's price is 1000 | 1,2
+hello(1,2)
+hello(1,2)
+```
+
+###  5. Basic Promise Ployfill (Level 1)
+```JS
+function PromisePolyfill(executor){
+    let onResolve, onReject;
+    let _value, isFulfilled, isRejected, isCalled
+    function resolve(val){
+        isFulfilled = true
+        _value = val
+        if(typeof onResolve === "function"){
+            console.log('Inside If')
+            onResolve(_value)
+            isCalled = true
+        }      
+    }
+    this.then = function(callback){
+        onResolve = callback
+        if(isFulfilled && !isCalled){
+            console.log('Called with then')
+            onResolve(_value)
+        }
+        return this
+    }
+    function reject(val){
+        isRejected = true
+        _value = val
+        if(typeof onReject === 'function'){
+            onReject(_value)
+            isCalled = true
+        }
+    }
+    this.catch = function(callback){
+        onReject = callback
+        if(isRejected && !isCalled){
+            onReject(_value)
+        }
+        return this
+    }
+    try {
+        executor(resolve,reject)
+    } catch (error) {
+        reject(error)
+    }
+}
+const p1 = new PromisePolyfill((resolve,reject)=>{
+    setTimeout(()=>{
+        resolve(2)
+    },1000)
+})
+p1.then((res)=>{
+    console.log(res)  // 2
+}).catch((res)=>{
+    console.log(res)
+})
 ```
