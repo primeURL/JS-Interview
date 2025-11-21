@@ -1215,3 +1215,6 @@ p1.then((res)=>{
     console.log(res)
 })
 ```
+
+## JS Runtime in Diagram
+<img width="14079" height="6950" alt="JS Runtime" src="https://github.com/user-attachments/assets/a38072bd-5b57-4ab0-8c85-c8fef71f434f" />
